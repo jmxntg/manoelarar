@@ -13,72 +13,75 @@ const ALBUMS = [
 const STICKERS = [
   {
     stickerId: "FIG01",
-    name: "Guardião da Árvore",
+    name: "Direito à Educação",
     qrValue: "GAME2026-FIG01-X92K7M",
-    imageUrl: "/stickers/fig01.svg",
+    imageUrl: "/stickers/fig01.jpg",
     points: 100,
     question: {
-      text: "Qual destes elementos ajuda uma planta a produzir seu próprio alimento?",
-      options: ["Areia", "Luz do sol", "Plástico", "Vidro"],
+      text: "O que a escola ajuda as crianças a aprender?",
+      options: ["Brigar com os colegas", "Ler e aprender coisas novas", "Ficar sem brincar", "Dormir o dia inteiro"],
       correctIndex: 1
     }
   },
   {
     stickerId: "FIG02",
-    name: "Explorador da Água",
+    name: "Direito à Brincadeira",
     qrValue: "GAME2026-FIG02-P31Q8A",
-    imageUrl: "/stickers/fig02.svg",
+    imageUrl: "/stickers/fig02.jpg",
     points: 100,
     question: {
-      text: "Qual atitude ajuda a economizar água?",
+      text: "Brincar é importante porque ajuda a criança a:",
       options: [
-        "Deixar a torneira aberta",
-        "Tomar banhos muito longos",
-        "Fechar a torneira ao escovar os dentes",
-        "Lavar a calçada todos os dias"
-      ],
-      correctIndex: 2
-    }
-  },
-  {
-    stickerId: "FIG03",
-    name: "Mestre da Reciclagem",
-    qrValue: "GAME2026-FIG03-L55N2C",
-    imageUrl: "/stickers/fig03.svg",
-    points: 100,
-    question: {
-      text: "Qual destes materiais pode ser reciclado?",
-      options: ["Garrafa PET", "Restos de comida", "Guardanapo sujo", "Chiclete"],
-      correctIndex: 0
-    }
-  },
-  {
-    stickerId: "FIG04",
-    name: "Protetor dos Animais",
-    qrValue: "GAME2026-FIG04-R70T1B",
-    imageUrl: "/stickers/fig04.svg",
-    points: 100,
-    question: {
-      text: "O que devemos fazer ao encontrar um animal precisando de ajuda?",
-      options: [
-        "Ignorar",
-        "Pedir ajuda a um adulto responsável",
-        "Assustar o animal",
-        "Levar para qualquer lugar sem cuidado"
+        "Ficar triste",
+        "Aprender, imaginar e se divertir",
+        "Brigar mais",
+        "Não falar com ninguém"
       ],
       correctIndex: 1
     }
   },
   {
-    stickerId: "FIG05",
-    name: "Cientista Curioso",
-    qrValue: "GAME2026-FIG05-H16V9D",
-    imageUrl: "/stickers/fig05.svg",
+    stickerId: "FIG03",
+    name: "Direito à Proteção",
+    qrValue: "GAME2026-FIG03-L55N2C",
+    imageUrl: "/stickers/fig03.jpg",
     points: 100,
     question: {
-      text: "Qual atitude é importante em uma investigação científica?",
-      options: ["Observar com atenção", "Inventar resultados", "Não fazer perguntas", "Copiar sem entender"],
+      text: "Se uma criança estiver triste ou em perigo, o que devemos fazer?",
+      options: ["Ignorar", "Rir da situação", "Procurar um adulto de confiança", "Sair correndo sozinho"],
+      correctIndex: 2
+    }
+  },
+  {
+    stickerId: "FIG04",
+    name: "Direito à Família",
+    qrValue: "GAME2026-FIG04-R70T1B",
+    imageUrl: "/stickers/fig04.jpg",
+    points: 100,
+    question: {
+      text: "Quem pode cuidar das crianças?",
+      options: [
+        "Família e responsáveis",
+        "Apenas desconhecidos",
+        "Ninguém",
+        "Só personagens de desenho"
+      ],
       correctIndex: 0
+    }
+  },
+  {
+    stickerId: "FIG05",
+    name: "Direito ao Respeito",
+    qrValue: "GAME2026-FIG05-H16V9D",
+    imageUrl: "/stickers/fig05.jpg",
+    points: 100,
+    question: {
+      text: "O que significa respeitar as outras pessoas?",
+      options: ["Xingar os colegas",
+      "Empurrar na fila",
+      "Fazer bullying",
+      "Ouvir, ajudar e tratar bem"],
+      correctIndex: 3
     }
   }
 ];
