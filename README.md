@@ -21,6 +21,69 @@ Projeto completo de MVP para um jogo infantil web baseado em QR codes, perguntas
 - Modo de prévia do álbum virtual, sem câmera, para conferência rápida.
 - Script para gerar QR codes de impressão.
 
+
+
+## Deploy no Render com as URLs finais
+
+Este pacote já está configurado para as seguintes URLs:
+
+```text
+Front-end: https://qrcode-hunt-ar-frontend.onrender.com
+Back-end:  https://qrcode-hunt-ar-backend.onrender.com
+```
+
+### Opção A — Render Blueprint
+
+Na raiz do projeto há um arquivo `render.yaml`. Para usar:
+
+1. Envie este projeto para um repositório GitHub.
+2. No Render, escolha **New → Blueprint**.
+3. Selecione o repositório.
+4. Confirme a criação dos dois serviços:
+   - `qrcode-hunt-ar-backend` como Web Service Node;
+   - `qrcode-hunt-ar-frontend` como Static Site.
+
+O `render.yaml` já define:
+
+```text
+FRONTEND_URL=https://qrcode-hunt-ar-frontend.onrender.com
+CORS_ORIGIN=https://qrcode-hunt-ar-frontend.onrender.com
+VITE_API_URL=https://qrcode-hunt-ar-backend.onrender.com
+VITE_SOCKET_URL=https://qrcode-hunt-ar-backend.onrender.com
+```
+
+### Opção B — Configuração manual
+
+Back-end no Render:
+
+```text
+Service Type: Web Service
+Name: qrcode-hunt-ar-backend
+Root Directory: backend
+Build Command: npm install
+Start Command: npm start
+Environment Variables:
+  NODE_ENV=production
+  FRONTEND_URL=https://qrcode-hunt-ar-frontend.onrender.com
+  CORS_ORIGIN=https://qrcode-hunt-ar-frontend.onrender.com
+  DATABASE_PATH=/tmp/qrcode-hunt-ar-game.sqlite
+```
+
+Front-end no Render:
+
+```text
+Service Type: Static Site
+Name: qrcode-hunt-ar-frontend
+Root Directory: frontend
+Build Command: npm install && npm run build
+Publish Directory: dist
+Environment Variables:
+  VITE_API_URL=https://qrcode-hunt-ar-backend.onrender.com
+  VITE_SOCKET_URL=https://qrcode-hunt-ar-backend.onrender.com
+```
+
+Observação: `DATABASE_PATH=/tmp/qrcode-hunt-ar-game.sqlite` funciona para demonstração no plano gratuito, mas os dados podem ser perdidos em reinícios/redeploys. Para um evento real, use um disco persistente no Render ou migre para PostgreSQL.
+
 ## Requisitos
 
 - Node.js 18 ou superior.

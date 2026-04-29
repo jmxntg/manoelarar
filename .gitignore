@@ -1,0 +1,6 @@
+node_modules
+.DS_Store
+backend/data/game.sqlite
+backend/printables
+frontend/dist
+.env

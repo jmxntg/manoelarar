@@ -180,7 +180,10 @@
     <script>
       const params = new URLSearchParams(window.location.search);
       const albumId = params.get("albumId") || localStorage.getItem("qrcode-hunt-current-album") || "";
-      const apiUrl = params.get("api") || "http://localhost:3001";
+      const RENDER_API_URL = "https://qrcode-hunt-ar-backend.onrender.com";
+      const LOCAL_API_URL = `${window.location.protocol}//${window.location.hostname}:3001`;
+      const isLocalHost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+      const apiUrl = params.get("api") || (isLocalHost ? LOCAL_API_URL : RENDER_API_URL);
       const hudText = document.getElementById("hudText");
       const statusEl = document.getElementById("status");
       const cameraHint = document.getElementById("cameraHint");

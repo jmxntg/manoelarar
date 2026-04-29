@@ -2,10 +2,10 @@ const fs = require("fs");
 const path = require("path");
 const sqlite3 = require("sqlite3").verbose();
 
-const dataDir = path.join(__dirname, "..", "data");
+const defaultDataDir = path.join(__dirname, "..", "data");
+const dbPath = process.env.DATABASE_PATH || path.join(defaultDataDir, "game.sqlite");
+const dataDir = path.dirname(dbPath);
 fs.mkdirSync(dataDir, { recursive: true });
-
-const dbPath = path.join(dataDir, "game.sqlite");
 const db = new sqlite3.Database(dbPath);
 
 function run(sql, params = []) {

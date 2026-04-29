@@ -30,7 +30,8 @@ const {
 } = require("./database");
 
 const PORT = Number(process.env.PORT || 3001);
-const CORS_ORIGIN = process.env.CORS_ORIGIN || "http://localhost:5173";
+const FRONTEND_URL = process.env.FRONTEND_URL || "https://qrcode-hunt-ar-frontend.onrender.com";
+const CORS_ORIGIN = process.env.CORS_ORIGIN || FRONTEND_URL || "http://localhost:5173";
 const LOCK_SECONDS = 10;
 
 const app = express();
@@ -38,11 +39,12 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: CORS_ORIGIN,
-    methods: ["GET", "POST"]
+    methods: ["GET", "POST"],
+    credentials: true
   }
 });
 
-app.use(cors({ origin: CORS_ORIGIN }));
+app.use(cors({ origin: CORS_ORIGIN, credentials: true }));
 app.use(express.json());
 
 function validateTeamName(teamName) {
@@ -276,7 +278,8 @@ app.use((err, _req, res, _next) => {
 initDb()
   .then(() => {
     server.listen(PORT, () => {
-      console.log(`Caça-Figurinhas RA API rodando em http://localhost:${PORT}`);
+      console.log(`Caça-Figurinhas RA API rodando na porta ${PORT}`);
+      console.log(`CORS liberado para: ${CORS_ORIGIN}`);
     });
   })
   .catch((err) => {

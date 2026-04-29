@@ -1,4 +1,10 @@
-export const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
+const LOCAL_API_URL = "http://localhost:3001";
+const RENDER_API_URL = "https://qrcode-hunt-ar-backend.onrender.com";
+
+export const API_URL =
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.DEV ? LOCAL_API_URL : RENDER_API_URL);
+
 export const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || API_URL;
 
 async function request(path, options = {}) {

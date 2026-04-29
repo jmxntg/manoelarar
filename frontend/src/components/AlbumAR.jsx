@@ -11,7 +11,7 @@ function AlbumAR({ team, gameData, stickersById, onClose }) {
       api: API_URL
     });
     return `/ar-album.html?${params.toString()}`;
-  }, [team.albumId]);
+  }, [team.albumId, API_URL]);
 
   return (
     <section className="ar-screen ar-page">
