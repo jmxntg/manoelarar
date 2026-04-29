@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alvo MindAR do Álbum</title>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background: #f4f7ff;
+        font-family: Arial, Helvetica, sans-serif;
+        color: #24315f;
+      }
+
+      .sheet {
+        width: min(92vw, 800px);
+        background: #fff;
+        border-radius: 24px;
+        box-shadow: 0 16px 40px rgba(36, 49, 95, 0.16);
+        padding: 28px;
+        text-align: center;
+      }
+
+      h1 {
+        margin: 0 0 8px;
+      }
+
+      p {
+        margin: 8px auto;
+        max-width: 620px;
+        line-height: 1.45;
+        color: #5d668a;
+      }
+
+      .target {
+        margin: 24px auto;
+        width: min(90%, 620px);
+        border: 12px solid #111;
+        border-radius: 10px;
+        background: #fff;
+        padding: 12px;
+      }
+
+      .target img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      .note {
+        font-weight: 700;
+        color: #24315f;
+      }
+
+      @media print {
+        body {
+          background: #fff;
+        }
+        .sheet {
+          width: auto;
+          box-shadow: none;
+          border-radius: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="sheet">
+      <h1>Alvo MindAR do Álbum</h1>
+      <p>
+        Use esta imagem como alvo para o modo RA com MindAR. Imprima ou abra em outro dispositivo e aponte a câmera para a imagem inteira.
+      </p>
+      <div class="target">
+        <img
+          alt="MindAR card target"
+          src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.png"
+        />
+      </div>
+      <p class="note">Mantenha a imagem plana, bem iluminada e completamente visível para melhorar o rastreamento.</p>
+      <p>
+        Para produção, substitua este alvo de exemplo pela arte do seu álbum e compile a imagem no MindAR Image Targets Compiler para gerar um arquivo <code>.mind</code> próprio.
+      </p>
+    </main>
+  </body>
+</html>

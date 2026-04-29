@@ -1,0 +1,22 @@
+{
+  "name": "qrcode-hunt-ar-backend",
+  "version": "1.0.0",
+  "description": "Backend do jogo infantil Caça-Figurinhas RA",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js",
+    "generate:qrcodes": "node tools/generate-qrcodes.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "qrcode": "^1.5.4",
+    "socket.io": "^4.8.1",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}

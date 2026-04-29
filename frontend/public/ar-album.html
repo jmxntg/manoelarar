@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Álbum RA MindAR — Caça-Figurinhas</title>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    <style>
+      html,
+      body {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        font-family: Arial, Helvetica, sans-serif;
+        background: transparent !important;
+        touch-action: none;
+      }
+
+      /*
+        MindAR can track successfully even when the webcam video element is
+        hidden behind an opaque WebGL canvas. Keep the webcam video as the
+        bottom layer and make the A-Frame canvas transparent above it.
+      */
+      a-scene {
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        z-index: 2 !important;
+        background: transparent !important;
+      }
+
+      canvas.a-canvas,
+      .a-canvas {
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        z-index: 3 !important;
+        background: transparent !important;
+        background-color: transparent !important;
+      }
+
+      video,
+      .mindar-video,
+      video[playsinline] {
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        min-width: 100vw !important;
+        min-height: 100vh !important;
+        object-fit: cover !important;
+        z-index: 1 !important;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        background: #000 !important;
+      }
+
+      #hud {
+        position: fixed;
+        z-index: 40;
+        left: 12px;
+        right: 12px;
+        top: max(12px, env(safe-area-inset-top));
+        padding: 12px 14px;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.94);
+        color: #24315f;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+        pointer-events: auto;
+      }
+
+      #hud strong {
+        display: block;
+        margin-bottom: 3px;
+      }
+
+      #hud small {
+        display: block;
+        color: #5d668a;
+        line-height: 1.35;
+      }
+
+      #status {
+        position: fixed;
+        z-index: 41;
+        left: 12px;
+        right: 12px;
+        bottom: max(12px, env(safe-area-inset-bottom));
+        padding: 10px 12px;
+        border-radius: 14px;
+        background: rgba(36, 49, 95, 0.92);
+        color: #fff;
+        font-weight: 700;
+        text-align: center;
+        pointer-events: none;
+      }
+
+      #closeLink {
+        position: fixed;
+        z-index: 42;
+        right: 18px;
+        top: max(20px, env(safe-area-inset-top));
+        color: #fff;
+        background: #24315f;
+        padding: 8px 12px;
+        border-radius: 999px;
+        text-decoration: none;
+        font-weight: 700;
+        pointer-events: auto;
+      }
+
+      #cameraHint {
+        position: fixed;
+        z-index: 43;
+        left: 12px;
+        right: 12px;
+        top: 118px;
+        display: none;
+        padding: 12px 14px;
+        border-radius: 14px;
+        background: rgba(255, 245, 214, 0.97);
+        color: #7a4b00;
+        font-weight: 700;
+        line-height: 1.35;
+      }
+
+      .a-loader-title,
+      .a-enter-vr,
+      .a-enter-ar {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="hud">
+      <strong>Modo RA com MindAR</strong>
+      <small id="hudText">Carregando dados da equipe...</small>
+    </div>
+    <a id="closeLink" href="/">Sair</a>
+    <div id="cameraHint">
+      Se o álbum aparece mas o fundo fica preto, o vídeo da câmera está ativo mas oculto pelo canvas. Esta versão força o vídeo como camada de fundo; recarregue a página após liberar a permissão.
+    </div>
+    <div id="status">Aponte a câmera para o alvo MindAR do álbum.</div>
+
+    <a-scene
+      id="scene"
+      mindar-image="imageTargetSrc: https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind; autoStart: true; uiLoading: yes; uiScanning: yes; uiError: yes;"
+      color-space="sRGB"
+      renderer="colorManagement: true; physicallyCorrectLights: false; antialias: true; alpha: true; precision: mediump"
+      vr-mode-ui="enabled: false"
+      device-orientation-permission-ui="enabled: false">
+      <a-assets id="assets" timeout="10000">
+        <img
+          id="mindarCard"
+          crossorigin="anonymous"
+          src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.png"
+        />
+      </a-assets>
+
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+      <a-entity id="albumTarget" mindar-image-target="targetIndex: 0">
+        <a-plane
+          id="targetImagePreview"
+          src="#mindarCard"
+          position="0 0 0"
+          width="1"
+          height="0.552"
+          opacity="0.16">
+        </a-plane>
+        <a-entity id="albumRoot" position="0 0 0.035"></a-entity>
+      </a-entity>
+    </a-scene>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const albumId = params.get("albumId") || localStorage.getItem("qrcode-hunt-current-album") || "";
+      const apiUrl = params.get("api") || "http://localhost:3001";
+      const hudText = document.getElementById("hudText");
+      const statusEl = document.getElementById("status");
+      const cameraHint = document.getElementById("cameraHint");
+      const target = document.getElementById("albumTarget");
+      const root = document.getElementById("albumRoot");
+      const assets = document.getElementById("assets");
+      const scene = document.getElementById("scene");
+
+      function forceCameraBackgroundVisible() {
+        // MindAR injects/updates the webcam <video> asynchronously. Repeat this
+        // styling whenever the DOM changes so the video stays visible below the
+        // transparent WebGL canvas.
+        const videos = Array.from(document.querySelectorAll("video"));
+        videos.forEach((video) => {
+          video.setAttribute("playsinline", "true");
+          video.setAttribute("webkit-playsinline", "true");
+          video.muted = true;
+          Object.assign(video.style, {
+            position: "fixed",
+            left: "0",
+            top: "0",
+            width: "100vw",
+            height: "100vh",
+            minWidth: "100vw",
+            minHeight: "100vh",
+            objectFit: "cover",
+            zIndex: "1",
+            display: "block",
+            visibility: "visible",
+            opacity: "1",
+            background: "#000"
+          });
+        });
+
+        const canvases = Array.from(document.querySelectorAll("canvas"));
+        canvases.forEach((canvas) => {
+          Object.assign(canvas.style, {
+            position: "fixed",
+            left: "0",
+            top: "0",
+            width: "100vw",
+            height: "100vh",
+            zIndex: "3",
+            background: "transparent",
+            backgroundColor: "transparent"
+          });
+        });
+
+        if (scene && scene.renderer) {
+          scene.renderer.setClearColor(0x000000, 0);
+          scene.renderer.setClearAlpha(0);
+        }
+        document.documentElement.style.background = "transparent";
+        document.body.style.background = "transparent";
+      }
+
+      scene.addEventListener("loaded", forceCameraBackgroundVisible);
+      scene.addEventListener("renderstart", forceCameraBackgroundVisible);
+      scene.addEventListener("arReady", forceCameraBackgroundVisible);
+      scene.addEventListener("arError", () => {
+        cameraHint.style.display = "block";
+      });
+
+      const observer = new MutationObserver(forceCameraBackgroundVisible);
+      observer.observe(document.body, { childList: true, subtree: true });
+      const cameraLayerInterval = setInterval(forceCameraBackgroundVisible, 500);
+      setTimeout(() => clearInterval(cameraLayerInterval), 12000);
+
+      function createEntity(tag, attrs = {}, parent = root) {
+        const el = document.createElement(tag);
+        Object.entries(attrs).forEach(([key, value]) => el.setAttribute(key, value));
+        parent.appendChild(el);
+        return el;
+      }
+
+      function addText(value, position, width = 1, color = "#24315F", align = "center") {
+        createEntity("a-text", {
+          value,
+          position,
+          color,
+          width,
+          align,
+          baseline: "center",
+          font: "kelsonsans"
+        });
+      }
+
+      function safeText(value) {
+        return String(value || "")
+          .replace(/[áàãâ]/gi, "a")
+          .replace(/[éê]/gi, "e")
+          .replace(/[í]/gi, "i")
+          .replace(/[óõô]/gi, "o")
+          .replace(/[ú]/gi, "u")
+          .replace(/[ç]/gi, "c");
+      }
+
+      function buildAlbum(team, gameData) {
+        const collectedStickers = Array.isArray(team.collectedStickers) ? team.collectedStickers : [];
+        const stickers = Array.isArray(gameData.stickers) ? gameData.stickers : [];
+        const totalStickers = gameData.totalStickers || stickers.length;
+
+        root.innerHTML = "";
+        Array.from(assets.querySelectorAll("img[data-sticker-asset='true']")).forEach((img) => img.remove());
+
+        createEntity("a-plane", {
+          position: "0 0 0",
+          width: "1.28",
+          height: "0.86",
+          color: "#FFFFFF",
+          opacity: "0.94"
+        });
+
+        createEntity("a-plane", {
+          position: "0 0.32 0.012",
+          width: "1.14",
+          height: "0.14",
+          color: "#E9EDFF",
+          opacity: "1"
+        });
+
+        addText("Album Magico RA", "0 0.35 0.035", 1.2, "#24315F", "center");
+        addText(`${safeText(team.teamName || "Equipe")} · ${team.score || 0} pts · ${collectedStickers.length}/${totalStickers}`, "0 0.27 0.035", 1.05, "#5D668A", "center");
+
+        const collected = new Set(collectedStickers);
+        const positions = [
+          [-0.46, -0.08],
+          [-0.23, -0.08],
+          [0, -0.08],
+          [0.23, -0.08],
+          [0.46, -0.08]
+        ];
+
+        stickers.forEach((sticker, index) => {
+          const [x, y] = positions[index] || [0, 0];
+          const hasSticker = collected.has(sticker.stickerId);
+
+          createEntity("a-plane", {
+            position: `${x} ${y} 0.025`,
+            width: "0.18",
+            height: "0.24",
+            color: hasSticker ? "#FFFFFF" : "#DDE3F7",
+            opacity: "1"
+          });
+
+          if (hasSticker) {
+            const img = document.createElement("img");
+            img.id = `asset-${sticker.stickerId}`;
+            img.dataset.stickerAsset = "true";
+            img.crossOrigin = "anonymous";
+            img.src = sticker.imageUrl;
+            assets.appendChild(img);
+
+            createEntity("a-image", {
+              src: `#asset-${sticker.stickerId}`,
+              position: `${x} ${y + 0.025} 0.04`,
+              width: "0.15",
+              height: "0.15"
+            });
+            addText(safeText(sticker.name), `${x} ${y - 0.095} 0.045`, 0.22, "#24315F", "center");
+          } else {
+            addText(String(index + 1), `${x} ${y + 0.02} 0.045`, 0.22, "#7A84A8", "center");
+            addText("vazio", `${x} ${y - 0.075} 0.045`, 0.18, "#7A84A8", "center");
+          }
+        });
+
+        if (collectedStickers.length === totalStickers && totalStickers > 0) {
+          createEntity("a-plane", {
+            position: "0 -0.34 0.025",
+            width: "1.0",
+            height: "0.13",
+            color: "#7CE2A9",
+            opacity: "1"
+          });
+          addText("Parabens! Album completo!", "0 -0.34 0.045", 1.1, "#153E2D", "center");
+        } else {
+          addText("Continue procurando as figurinhas!", "0 -0.35 0.045", 1.1, "#24315F", "center");
+        }
+      }
+
+      async function loadData() {
+        if (!albumId) {
+          hudText.textContent = "Nenhum álbum foi identificado. Volte ao jogo e escaneie o QR code do álbum primeiro.";
+          return;
+        }
+
+        try {
+          const [gameResponse, teamResponse] = await Promise.all([
+            fetch(`${apiUrl}/api/game-data`).then((r) => r.json()),
+            fetch(`${apiUrl}/api/teams/${encodeURIComponent(albumId)}`).then((r) => r.json())
+          ]);
+
+          if (!teamResponse.team) {
+            throw new Error(teamResponse.message || "Equipe não encontrada.");
+          }
+
+          hudText.textContent = `Equipe: ${teamResponse.team.teamName}. Aponte para o alvo MindAR do álbum.`;
+          buildAlbum(teamResponse.team, gameResponse);
+        } catch (error) {
+          hudText.textContent = `Erro ao carregar álbum: ${error.message}`;
+        }
+      }
+
+      target.addEventListener("targetFound", () => {
+        statusEl.textContent = "Alvo encontrado! O álbum virtual está ancorado na imagem.";
+      });
+
+      target.addEventListener("targetLost", () => {
+        statusEl.textContent = "Alvo perdido. Aponte novamente para a imagem inteira e mantenha boa iluminação.";
+      });
+
+      setTimeout(() => {
+        forceCameraBackgroundVisible();
+        const videos = Array.from(document.querySelectorAll("video"));
+        const hasVideoFrames = videos.some((v) => v.videoWidth > 0 && v.videoHeight > 0);
+        const hasVisibleVideo = videos.some((v) => {
+          const style = getComputedStyle(v);
+          return v.videoWidth > 0 && v.videoHeight > 0 && style.display !== "none" && style.visibility !== "hidden" && Number(style.opacity) > 0;
+        });
+        if (hasVideoFrames && !hasVisibleVideo) {
+          cameraHint.textContent = "A câmera está ativa, mas o navegador ocultou o vídeo. Recarregue esta página de RA em tela cheia.";
+          cameraHint.style.display = "block";
+        }
+      }, 6000);
+
+      window.addEventListener("pagehide", () => {
+        observer.disconnect();
+        const videos = document.querySelectorAll("video");
+        videos.forEach((video) => {
+          const stream = video.srcObject;
+          if (stream && typeof stream.getTracks === "function") {
+            stream.getTracks().forEach((track) => track.stop());
+          }
+        });
+      });
+
+      loadData();
+    </script>
+  </body>
+</html>
